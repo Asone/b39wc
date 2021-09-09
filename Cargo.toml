@@ -1,5 +1,5 @@
 [package]
-name = "demo"
+name = "smwc"
 version = "0.1.0"
 authors = ["Nelson Herbin <nelson@herbin.info>"]
 edition = "2018"
