@@ -70,26 +70,29 @@ fn test_check_words_number(){
     
 }
 
-fn check_from_builtin_dictionaries(words: SplitWhitespace) -> bool {
+fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>) {
+    let mut missing: Vec<String> = Vec::new();
     let mut all_found = true;
 
     '_outer: for word in words.into_iter() {
+        let mut is_found = false;
         '_inner: for dictionary in [ENGLISH, FRENCH].to_vec() {
-            let mut is_found = false;
             match self::find_in_dictionary(dictionary.to_vec(), word) {
                 true => {
                     is_found = true;
                 }
                 false => {}
             }
-            if !is_found {
-                all_found = false;
-                break '_outer;
-            }
+
+        }
+
+        if !is_found {
+            all_found = false;
+            missing.push(word.clone().to_string());
         }
     }
 
-    return all_found;
+    return (all_found, missing);
 }
 
 fn load_dictionary(path: &str) -> String {
@@ -98,7 +101,8 @@ fn load_dictionary(path: &str) -> String {
     return content;
 }
 
-fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) -> bool {
+fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) -> (bool,Vec<String>) {
+    let mut missing: Vec<String> = Vec::new();
     let mut dictionaries: Vec<String> = Vec::new();
     for path in paths {
         let dictionary = self::load_dictionary(path).clone();
@@ -108,8 +112,8 @@ fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) ->
     let mut all_found = true;
 
     '_outer: for word in words.into_iter() {
+        let mut is_found = false;
         '_inner: for dictionary in dictionaries.iter() {
-            let mut is_found = false;
             let regex_string = format!(r"{}", &word);
             let regex = Regex::new(regex_string.as_str()).unwrap();
 
@@ -119,15 +123,16 @@ fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) ->
                 }
                 false => {}
             }
+        }
 
-            if !is_found {
-                all_found = false;
-                break '_outer;
-            }
+        if !is_found {
+            missing.push(word.clone().to_string());
+            all_found = false;
+            // break '_outer;
         }
     }
 
-    return all_found;
+    return (all_found, missing);
 }
 
 fn main() {
@@ -187,7 +192,7 @@ fn main() {
 
     let words = self::get_words(seed);
 
-    let result: bool;
+    let result: (bool, Vec<String>);
 
     // Handles wether or not we have to use built-in dictionaries
     match matches.value_of("dictionaries") {
@@ -201,20 +206,36 @@ fn main() {
     }
 
     match result {
-        true => {
+        (true, _) => {
             green_ln!("Provided words were all found in dictionary");
             exit(0);
         }
-        false => {
-            red_ln!("One or many words were not found in dictionary");
+        (false, missing) => {
+            let missing_str: String = missing.join(",");
+            red_ln!("One or many words were not found in dictionary: {}",missing_str);
             exit(1);
         }
     }
 }
 
 #[test]
-fn test_successful_program(){
+fn test_successful_program_without_options() -> Result<(), Box<dyn std::error::Error>> {
     let test_seed: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
+    let mut cmd = Command::cargo_bin("smwc")?;
+    cmd.arg(test_seed);
+    cmd.assert().success();
+
+    Ok(())
+}
+
+#[test]
+fn test_unsuccessful_program_without_options() -> Result<(), Box<dyn std::error::Error>> {
+    let test_seed: &str = "cswisafraud quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
+    let mut cmd = Command::cargo_bin("smwc")?;
+    cmd.arg(test_seed);
+    cmd.assert().failure();
+
+    Ok(())
 }
 
 
