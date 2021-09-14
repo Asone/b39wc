@@ -33,6 +33,16 @@ fn get_words(content: &str) -> SplitWhitespace<'_> {
     return splitted_content;
 }
 
+#[test]
+fn test_get_words(){
+    let test_seed: &str = "abandon toto tata";
+    let results: Vec<&str> = get_words(test_seed).collect();
+    assert_eq!("abandon",results[0]);
+    assert_eq!("toto",results[1]);
+    assert_ne!("abandon",results[1]);
+    assert_eq!("tata",results[2]);
+}
+
 fn process_paths(paths: &str) -> Vec<&str> {
     return paths.split(',').collect();
 }
@@ -45,6 +55,19 @@ fn check_words_number(content: &str) -> Result<bool,usize> {
         return Err(splitted_content.clone().count());
     }
        return Ok(true);
+}
+
+
+#[test]
+fn test_check_words_number(){
+    let test_seed: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
+    let test_seed_failure: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid";
+    let result= check_words_number(test_seed);
+    assert!(result.is_ok());
+    assert_eq!(true,result.unwrap());
+    let result = check_words_number(test_seed_failure);
+    assert!(result.is_err());
+    
 }
 
 fn check_from_builtin_dictionaries(words: SplitWhitespace) -> bool {
@@ -189,26 +212,11 @@ fn main() {
     }
 }
 
-
-
 #[test]
-fn test_get_words(){
-    let test_seed: &str = "abandon toto tata";
-    let results: Vec<&str> = get_words(test_seed).collect();
-    assert_eq!("abandon",results[0]);
-    assert_eq!("toto",results[1]);
-    assert_ne!("abandon",results[1]);
-    assert_eq!("tata",results[2]);
-}
-
-#[test]
-fn test_words_number(){
+fn test_successful_program(){
     let test_seed: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
-    let test_seed_failure: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid";
-    let result= check_words_number(test_seed);
-    assert!(result.is_ok());
-    assert_eq!(true,result.unwrap());
-    let result = check_words_number(test_seed_failure);
-    assert!(result.is_err());
-    
 }
+
+
+
+
