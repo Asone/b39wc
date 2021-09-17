@@ -1,4 +1,4 @@
-![CircleCI](https://circleci.com/gh/Asone/b39wc.svg?style=svg)
+![CircleCI](https://circleci.com/gh/Asone/b39wc.svg?style=svg) ![b39wc](https://github.com/Asone/b39wc/actions/workflows/rust.yml/badge.svg)
 # BIP 39 Words Checker
 
 
