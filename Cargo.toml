@@ -1,13 +1,17 @@
 [package]
 name = "b39wc"
+description = "A simple BIP-39 mnemonic words checker"
 version = "1.0.0"
 authors = ["Nelson Herbin <nelson@herbin.info>"]
 edition = "2018"
-
-[library]
+licence = "MIT"
+readme = "README.md"
+repository = "https://github.com/Asone/b39wc"
+keywords = ["bitcoin", "BIP-39","BIP-0039","mnemonic"]
+categories = ["command-line-utilities"]
 
 [dependencies]
-microprofile = "0.0.2"
+microprofile = "0.0.2" 
 rand = "0.6.5"
 regex = "1"
 glob = "0.3.0"
