@@ -56,6 +56,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 
 [[package]]
+name = "b39wc"
+version = "0.1.0"
+dependencies = [
+ "assert_cmd",
+ "clap",
+ "colour",
+ "glob",
+ "microprofile",
+ "predicates",
+ "rand",
+ "regex",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -564,20 +578,6 @@ name = "smallvec"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fe0f37c9e8f3c5a4a66ad655a93c74daac4ad00c441533bf5c6e7990bb42604e"
-
-[[package]]
-name = "smwc"
-version = "0.1.0"
-dependencies = [
- "assert_cmd",
- "clap",
- "colour",
- "glob",
- "microprofile",
- "predicates",
- "rand",
- "regex",
-]
 
 [[package]]
 name = "strsim"

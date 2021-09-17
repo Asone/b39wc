@@ -177,7 +177,7 @@ fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) ->
 }
 
 fn main() {
-    let matches = App::new("smwc")
+    let matches = App::new("b39wc")
         .version("1.0")
         .author("Nelson Herbin <nelson@herbin.info>")
         .about("Minimalist seed words checker")
@@ -266,7 +266,7 @@ fn main() {
 #[test]
 fn test_successful_program_without_options() -> Result<(), Box<dyn std::error::Error>> {
     let test_seed: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
-    let mut cmd = Command::cargo_bin("smwc")?;
+    let mut cmd = Command::cargo_bin("b39wc")?;
     cmd.arg(test_seed);
     cmd.assert().success();
 
@@ -276,7 +276,7 @@ fn test_successful_program_without_options() -> Result<(), Box<dyn std::error::E
 #[test]
 fn test_unsuccessful_program_without_options() -> Result<(), Box<dyn std::error::Error>> {
     let test_seed: &str = "cswisafraud quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
-    let mut cmd = Command::cargo_bin("smwc")?;
+    let mut cmd = Command::cargo_bin("b39wc")?;
     cmd.arg(test_seed);
     cmd.assert().failure();
 
@@ -286,7 +286,7 @@ fn test_unsuccessful_program_without_options() -> Result<(), Box<dyn std::error:
 #[test]
 fn test_unsuccessful_program_with_word_count() -> Result<(), Box<dyn std::error::Error>> {
     let test_seed: &str = "cswisafraud quit";
-    let mut cmd = Command::cargo_bin("smwc")?;
+    let mut cmd = Command::cargo_bin("b39wc")?;
     cmd.arg(test_seed);
     cmd.assert().failure();
 
@@ -296,7 +296,7 @@ fn test_unsuccessful_program_with_word_count() -> Result<(), Box<dyn std::error:
 #[test]
 fn test_successful_program_with_word_count_skip() -> Result<(), Box<dyn std::error::Error>> {
     let test_seed: &str = "erupt quit";
-    let mut cmd = Command::cargo_bin("smwc")?;
+    let mut cmd = Command::cargo_bin("b39wc")?;
     cmd.arg("--skip-count");
     cmd.arg(test_seed);
     cmd.assert().success();
@@ -307,7 +307,7 @@ fn test_successful_program_with_word_count_skip() -> Result<(), Box<dyn std::err
 #[test]
 fn test_successful_program_with_external_dictionary() -> Result<(), Box<dyn std::error::Error>> {
      let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("smwc")?;
+     let mut cmd = Command::cargo_bin("b39wc")?;
 
     let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
@@ -320,7 +320,7 @@ fn test_successful_program_with_external_dictionary() -> Result<(), Box<dyn std:
 #[test]
 fn test_unsuccessful_program_with_external_dictionary_seed_failure() -> Result<(), Box<dyn std::error::Error>> {
      let test_seed: &str = "bitpoint batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("smwc")?;
+     let mut cmd = Command::cargo_bin("b39wc")?;
 
     let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
@@ -333,7 +333,7 @@ fn test_unsuccessful_program_with_external_dictionary_seed_failure() -> Result<(
 #[test]
 fn test_unsuccessful_program_with_external_dictionary_load_failure() -> Result<(), Box<dyn std::error::Error>> {
      let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("smwc")?;
+     let mut cmd = Command::cargo_bin("b39wc")?;
 
     let dictionary_argument: String = format!("-d {}","resources/test/invalid_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
@@ -346,7 +346,7 @@ fn test_unsuccessful_program_with_external_dictionary_load_failure() -> Result<(
 #[test]
 fn test_unsuccessful_program_with_external_dictionary_count_failure() -> Result<(), Box<dyn std::error::Error>> {
      let test_seed: &str = "loterie batterie érosion";
-     let mut cmd = Command::cargo_bin("smwc")?;
+     let mut cmd = Command::cargo_bin("b39wc")?;
 
     let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
@@ -359,7 +359,7 @@ fn test_unsuccessful_program_with_external_dictionary_count_failure() -> Result<
 #[test]
 fn test_successful_program_with_external_dictionary_and_skip_count() -> Result<(), Box<dyn std::error::Error>> {
      let test_seed: &str = "loterie batterie érosion";
-     let mut cmd = Command::cargo_bin("smwc")?;
+     let mut cmd = Command::cargo_bin("b39wc")?;
 
     let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
