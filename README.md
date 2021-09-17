@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/github/Asone/smwc.svg?style=svg)]
+![CircleCI](https://circleci.com/gh/Asone/smwc.svg?style=svg)
 # BIP 39 Words Checker
 
 
