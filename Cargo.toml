@@ -9,6 +9,8 @@ readme = "README.md"
 repository = "https://github.com/Asone/b39wc"
 keywords = ["bitcoin", "BIP-39","BIP-0039","mnemonic"]
 categories = ["command-line-utilities"]
+homepage = "https://github.com/Asone/b39wc"
+documentation = "https://github.com/Asone/b39wc"
 
 [dependencies]
 microprofile = "0.0.2" 
