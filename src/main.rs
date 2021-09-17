@@ -55,6 +55,10 @@ fn test_get_words(){
     assert_eq!("tata",results[2]);
 }
 
+/**
+ * Splits a string based on coma separator. 
+ * Used to split provided paths by user.
+ */
 fn process_paths(paths: &str) -> Vec<&str> {
     return paths.split(',').collect();
 }
@@ -67,9 +71,13 @@ fn test_process_paths(){
     assert_eq!(2,process_paths(multiple_paths).iter().count());
 }
 
+/**
+ * Checks the number of words in a string instance. 
+ * Fails if string instance has more or less words than 24 
+ * which is the official mnemonic phrase length
+ */
 fn check_words_number(content: &str) -> Result<bool,usize> {
     let splitted_content = content.split_whitespace();
-    // let re = Regex::new(r"[a-zA-Z]+$").unwrap();
 
     if splitted_content.clone().count() != 24 {
         return Err(splitted_content.clone().count());
@@ -89,6 +97,9 @@ fn test_check_words_number(){
     
 }
 
+/**
+ * Performs seed words check with built-in provided dictionaries
+ */
 fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>) {
     let mut missing: Vec<String> = Vec::new();
     let mut all_found = true;
@@ -114,6 +125,11 @@ fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>)
     return (all_found, missing);
 }
 
+/**
+ * loads the content of a file. 
+ * Will return an Err if path is invalid.
+ * Used to load provided dictionaries content
+ */
 fn load_dictionary(path: &str) -> Result<String,&str> {
     match fs::read_to_string(path){
         Ok(data) => Ok(data),
@@ -136,6 +152,9 @@ fn test_load_dictionary(){
     
 }
 
+/**
+ * Performs a seed words check with external dictionaries provided by user
+ */
 fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) -> (bool,Vec<String>) {
     let mut missing: Vec<String> = Vec::new();
     let mut dictionaries: Vec<String> = Vec::new();
@@ -176,6 +195,9 @@ fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) ->
     return (all_found, missing);
 }
 
+/**
+ * Main process
+ */
 fn main() {
     let matches = App::new("b39wc")
         .version("1.0")
