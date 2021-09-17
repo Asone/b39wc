@@ -8,16 +8,8 @@ use clap::{App, Arg};
 use colour::green_ln;
 use colour::red_ln;
 use dictionaries::langs::{
-    CZECH, 
-    FRENCH, 
-    ITALIAN, 
-    ENGLISH, 
-    JAPANESE, 
-    KOREAN, 
-    PORTUGUESE, 
-    SPANISH, 
-    CHINESE_SIMPLIFIED, 
-    CHINESE_TRADITIONAL
+    CHINESE_SIMPLIFIED, CHINESE_TRADITIONAL, CZECH, ENGLISH, FRENCH, ITALIAN, JAPANESE, KOREAN,
+    PORTUGUESE, SPANISH,
 };
 use regex::Regex;
 use std::fs;
@@ -46,17 +38,17 @@ fn get_words(content: &str) -> SplitWhitespace<'_> {
 }
 
 #[test]
-fn test_get_words(){
+fn test_get_words() {
     let test_seed: &str = "abandon toto tata";
     let results: Vec<&str> = get_words(test_seed).collect();
-    assert_eq!("abandon",results[0]);
-    assert_eq!("toto",results[1]);
-    assert_ne!("abandon",results[1]);
-    assert_eq!("tata",results[2]);
+    assert_eq!("abandon", results[0]);
+    assert_eq!("toto", results[1]);
+    assert_ne!("abandon", results[1]);
+    assert_eq!("tata", results[2]);
 }
 
 /**
- * Splits a string based on coma separator. 
+ * Splits a string based on coma separator.
  * Used to split provided paths by user.
  */
 fn process_paths(paths: &str) -> Vec<&str> {
@@ -64,56 +56,67 @@ fn process_paths(paths: &str) -> Vec<&str> {
 }
 
 #[test]
-fn test_process_paths(){
+fn test_process_paths() {
     let single_path: &str = "./my/path.txt";
     let multiple_paths: &str = "./my/path1.txt,./my/path2.txt";
-    assert_eq!(1,process_paths(single_path).iter().count());
-    assert_eq!(2,process_paths(multiple_paths).iter().count());
+    assert_eq!(1, process_paths(single_path).iter().count());
+    assert_eq!(2, process_paths(multiple_paths).iter().count());
 }
 
 /**
- * Checks the number of words in a string instance. 
- * Fails if string instance has more or less words than 24 
+ * Checks the number of words in a string instance.
+ * Fails if string instance has more or less words than 24
  * which is the official mnemonic phrase length
  */
-fn check_words_number(content: &str) -> Result<bool,usize> {
+fn check_words_number(content: &str) -> Result<bool, usize> {
     let splitted_content = content.split_whitespace();
 
     if splitted_content.clone().count() != 24 {
         return Err(splitted_content.clone().count());
     }
-       return Ok(true);
+    return Ok(true);
 }
 
 #[test]
-fn test_check_words_number(){
+fn test_check_words_number() {
     let test_seed: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb";
     let test_seed_failure: &str = "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid";
-    let result= check_words_number(test_seed);
+    let result = check_words_number(test_seed);
     assert!(result.is_ok());
-    assert_eq!(true,result.unwrap());
+    assert_eq!(true, result.unwrap());
     let result = check_words_number(test_seed_failure);
     assert!(result.is_err());
-    
 }
 
 /**
  * Performs seed words check with built-in provided dictionaries
  */
-fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>) {
+fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool, Vec<String>) {
     let mut missing: Vec<String> = Vec::new();
     let mut all_found = true;
 
     '_outer: for word in words.into_iter() {
         let mut is_found = false;
-        '_inner: for dictionary in [ENGLISH, FRENCH, CZECH, ITALIAN, SPANISH, PORTUGUESE, JAPANESE, KOREAN, CHINESE_TRADITIONAL, CHINESE_SIMPLIFIED].to_vec() {
+        '_inner: for dictionary in [
+            ENGLISH,
+            FRENCH,
+            CZECH,
+            ITALIAN,
+            SPANISH,
+            PORTUGUESE,
+            JAPANESE,
+            KOREAN,
+            CHINESE_TRADITIONAL,
+            CHINESE_SIMPLIFIED,
+        ]
+        .to_vec()
+        {
             match self::find_in_dictionary(dictionary.to_vec(), word) {
                 true => {
                     is_found = true;
                 }
                 false => {}
             }
-
         }
 
         if !is_found {
@@ -126,45 +129,45 @@ fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>)
 }
 
 /**
- * loads the content of a file. 
+ * loads the content of a file.
  * Will return an Err if path is invalid.
  * Used to load provided dictionaries content
  */
-fn load_dictionary(path: &str) -> Result<String,&str> {
-    match fs::read_to_string(path){
+fn load_dictionary(path: &str) -> Result<String, &str> {
+    match fs::read_to_string(path) {
         Ok(data) => Ok(data),
-        Err(_) => Err(path)
+        Err(_) => Err(path),
     }
 }
 
 #[test]
-fn test_load_dictionary(){
-
+fn test_load_dictionary() {
     let invalid_path: &str = "resources/test/invalid_dictionary.txt";
     assert!(load_dictionary(invalid_path).is_err());
 
-    
     let valid_path: &str = "resources/test/test_dictionary.txt";
-    let result: Result<String,&str> = load_dictionary(valid_path);
+    let result: Result<String, &str> = load_dictionary(valid_path);
     assert!(result.is_ok());
     assert!(result.unwrap().as_str().contains("loterie"));
     // assert_eq!("hello world",result.unwrap().as_str());
-    
 }
 
 /**
  * Performs a seed words check with external dictionaries provided by user
  */
-fn check_from_external_dictionaries(paths: Vec<&str>, words: SplitWhitespace) -> (bool,Vec<String>) {
+fn check_from_external_dictionaries(
+    paths: Vec<&str>,
+    words: SplitWhitespace,
+) -> (bool, Vec<String>) {
     let mut missing: Vec<String> = Vec::new();
     let mut dictionaries: Vec<String> = Vec::new();
     for path in paths {
-        match self::load_dictionary(path){
+        match self::load_dictionary(path) {
             Ok(dictionary) => {
                 dictionaries.push(dictionary);
-            },
+            }
             Err(failed_path) => {
-                red_ln!("Error loading dictionary with path : {}",failed_path);
+                red_ln!("Error loading dictionary with path : {}", failed_path);
                 exit(1);
             }
         }
@@ -237,24 +240,21 @@ fn main() {
     }
 
     // Skips the count checker of the provided seed
-    
+
     let skip_count: bool = matches.is_present("skipcount");
 
-    match skip_count{
-        true => {},
-        false => {        
-
-            match self::check_words_number(seed){
-                Ok(_) => {},
-                Err(count) => {
-                    red_ln!(
-                        "Provided mnemonic seed is invalid. 24 words expected, {} found",
-                        count
-                    );
-                    exit(1)
-                }   
+    match skip_count {
+        true => {}
+        false => match self::check_words_number(seed) {
+            Ok(_) => {}
+            Err(count) => {
+                red_ln!(
+                    "Provided mnemonic seed is invalid. 24 words expected, {} found",
+                    count
+                );
+                exit(1)
             }
-        }
+        },
     }
 
     let words = self::get_words(seed);
@@ -279,7 +279,10 @@ fn main() {
         }
         (false, missing) => {
             let missing_str: String = missing.join(",");
-            red_ln!("One or many words were not found in dictionaries: {}",missing_str);
+            red_ln!(
+                "One or many words were not found in dictionaries: {}",
+                missing_str
+            );
             exit(1);
         }
     }
@@ -328,10 +331,10 @@ fn test_successful_program_with_word_count_skip() -> Result<(), Box<dyn std::err
 
 #[test]
 fn test_successful_program_with_external_dictionary() -> Result<(), Box<dyn std::error::Error>> {
-     let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("b39wc")?;
+    let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
+    let mut cmd = Command::cargo_bin("b39wc")?;
 
-    let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
+    let dictionary_argument: String = format!("-d {}", "resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
     cmd.arg(test_seed);
     cmd.assert().success();
@@ -340,11 +343,12 @@ fn test_successful_program_with_external_dictionary() -> Result<(), Box<dyn std:
 }
 
 #[test]
-fn test_unsuccessful_program_with_external_dictionary_seed_failure() -> Result<(), Box<dyn std::error::Error>> {
-     let test_seed: &str = "bitpoint batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("b39wc")?;
+fn test_unsuccessful_program_with_external_dictionary_seed_failure(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let test_seed: &str = "bitpoint batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
+    let mut cmd = Command::cargo_bin("b39wc")?;
 
-    let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
+    let dictionary_argument: String = format!("-d {}", "resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
     cmd.arg(test_seed);
     cmd.assert().failure();
@@ -353,11 +357,12 @@ fn test_unsuccessful_program_with_external_dictionary_seed_failure() -> Result<(
 }
 
 #[test]
-fn test_unsuccessful_program_with_external_dictionary_load_failure() -> Result<(), Box<dyn std::error::Error>> {
-     let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
-     let mut cmd = Command::cargo_bin("b39wc")?;
+fn test_unsuccessful_program_with_external_dictionary_load_failure(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let test_seed: &str = "loterie batterie érosion immobile marqueur sembler malice farceur défensif caresser avenir trivial ouvrage ozone union palmarès impact facette diluer faiblir radieux spacieux naufrage lampe";
+    let mut cmd = Command::cargo_bin("b39wc")?;
 
-    let dictionary_argument: String = format!("-d {}","resources/test/invalid_dictionary.txt");
+    let dictionary_argument: String = format!("-d {}", "resources/test/invalid_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
     cmd.arg(test_seed);
     cmd.assert().failure();
@@ -366,11 +371,12 @@ fn test_unsuccessful_program_with_external_dictionary_load_failure() -> Result<(
 }
 
 #[test]
-fn test_unsuccessful_program_with_external_dictionary_count_failure() -> Result<(), Box<dyn std::error::Error>> {
-     let test_seed: &str = "loterie batterie érosion";
-     let mut cmd = Command::cargo_bin("b39wc")?;
+fn test_unsuccessful_program_with_external_dictionary_count_failure(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let test_seed: &str = "loterie batterie érosion";
+    let mut cmd = Command::cargo_bin("b39wc")?;
 
-    let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
+    let dictionary_argument: String = format!("-d {}", "resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
     cmd.arg(test_seed);
     cmd.assert().failure();
@@ -379,11 +385,12 @@ fn test_unsuccessful_program_with_external_dictionary_count_failure() -> Result<
 }
 
 #[test]
-fn test_successful_program_with_external_dictionary_and_skip_count() -> Result<(), Box<dyn std::error::Error>> {
-     let test_seed: &str = "loterie batterie érosion";
-     let mut cmd = Command::cargo_bin("b39wc")?;
+fn test_successful_program_with_external_dictionary_and_skip_count(
+) -> Result<(), Box<dyn std::error::Error>> {
+    let test_seed: &str = "loterie batterie érosion";
+    let mut cmd = Command::cargo_bin("b39wc")?;
 
-    let dictionary_argument: String = format!("-d {}","resources/test/test_dictionary.txt");
+    let dictionary_argument: String = format!("-d {}", "resources/test/test_dictionary.txt");
     cmd.arg(dictionary_argument.as_str());
     cmd.arg("--skip-count");
     cmd.arg(test_seed);
@@ -391,6 +398,3 @@ fn test_successful_program_with_external_dictionary_and_skip_count() -> Result<(
 
     Ok(())
 }
-
-
-
