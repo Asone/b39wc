@@ -1,16 +1,28 @@
 mod dictionaries;
-use assert_cmd::assert;
+
+use assert_cmd::prelude::*; // Add methods on commands
+use predicates::prelude::*; // Used for writing assertions
+use std::process::Command;
+
 use clap::{App, Arg};
 use colour::green_ln;
 use colour::red_ln;
-use dictionaries::{ENGLISH, FRENCH};
+use dictionaries::langs::{
+    CZECH, 
+    FRENCH, 
+    ITALIAN, 
+    ENGLISH, 
+    JAPANESE, 
+    KOREAN, 
+    PORTUGUESE, 
+    SPANISH, 
+    CHINESE_SIMPLIFIED, 
+    CHINESE_TRADITIONAL
+};
 use regex::Regex;
 use std::fs;
 use std::process::exit;
 use std::str::SplitWhitespace;
-use assert_cmd::prelude::*; // Add methods on commands
-use predicates::prelude::*; // Used for writing assertions
-use std::process::Command;
 
 fn find_in_dictionary(dictionary: Vec<&str>, word: &str) -> bool {
     let mut result: bool = false;
@@ -83,7 +95,7 @@ fn check_from_builtin_dictionaries(words: SplitWhitespace) -> (bool,Vec<String>)
 
     '_outer: for word in words.into_iter() {
         let mut is_found = false;
-        '_inner: for dictionary in [ENGLISH, FRENCH].to_vec() {
+        '_inner: for dictionary in [ENGLISH, FRENCH, CZECH, ITALIAN, SPANISH, PORTUGUESE, JAPANESE, KOREAN, CHINESE_TRADITIONAL, CHINESE_SIMPLIFIED].to_vec() {
             match self::find_in_dictionary(dictionary.to_vec(), word) {
                 true => {
                     is_found = true;
