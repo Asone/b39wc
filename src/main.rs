@@ -274,12 +274,12 @@ fn main() {
 
     match result {
         (true, _) => {
-            green_ln!("Provided words were all found in dictionary");
+            green_ln!("Provided words were all found in dictionaries");
             exit(0);
         }
         (false, missing) => {
             let missing_str: String = missing.join(",");
-            red_ln!("One or many words were not found in dictionary: {}",missing_str);
+            red_ln!("One or many words were not found in dictionaries: {}",missing_str);
             exit(1);
         }
     }

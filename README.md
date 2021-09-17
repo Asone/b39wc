@@ -26,3 +26,16 @@ ARGS:
     <seed>    The 24 words for seed generation
 
 ````
+
+Example: 
+
+````
+b39wc "erupt quit sphere taxi air decade vote mixed life elevator mammal search empower rabbit barely indoor crush grid slide correct scatter deal tenant verb"
+````
+
+will return :
+
+````
+words to be searched : erupt, quit, sphere, taxi, air, decade, vote, mixed, life, elevator, mammal, search, empower, rabbit, barely, indoor, crush, grid, slide, correct, scatter, deal, tenant, verb
+Provided words were all found in dictionaries
+````
